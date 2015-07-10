@@ -1,0 +1,119 @@
+#!/bin/sh
+# -*- mode: shell-script; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+#
+# Copyright (C) 2012, 2013 O.S. Systems Software LTDA.
+# Authored-by:  Otavio Salvador <otavio@ossystems.com.br>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# Adapted for the Genivi Demo platform by Johnny Karlsson, Volvo Cars 2015
+#
+SOURCES=`pwd`
+MACHINE=$1
+if [ -z "$BUILDROOT" ]; then
+    echo "Please select the development board you wish to target"
+    echo "Currently supported boards are the Koelsh and the porter board"
+    echo "Example: source ./setup-environment koelsh"
+    return
+fi
+BUILD_FOLDER="gpd-build-$MACHINE"
+
+if [ ! -d "meta-genivi-demo" ]; then
+    git clone git://git.projects.genivi.org/meta-genivi-demo.git
+fi
+if [ ! -d "meta-ivi" ]; then
+    git clone git://git.yoctoproject.org/meta-ivi
+    cd meta-ivi
+    git checkout 0d780d0cfd38694ae5e6f0198adcb72684b01acc
+    cd $SOURCES
+fi
+if [ ! -d "poky" ]; then
+    git clone git://git.yoctoproject.org/poky
+    cd poky
+    git checkout b630f2f53645fa8f5890b4732f251c354ad525a7 
+    cd $SOURCES
+fi
+if [ ! -d "meta-qt5" ]; then
+        git clone https://github.com/meta-qt5/meta-qt5.git
+    cd meta-qt5
+    git checkout adeca0db212d61a933d7952ad44ea1064cfca747
+    cd $SOURCES
+fi
+if [ ! -d "meta-openembedded" ]; then
+    git clone git://git.openembedded.org/meta-openembedded 
+    cd meta-openembedded
+    git checkout 6413cdb66acf43059f94d0076ec9b8ad6a475b35
+    cd $SOURCES
+fi
+if [ ! -d "meta-renesas" ]; then
+    git clone git://github.com/slawr/meta-renesas.git
+    cd meta-renesas
+    git checkout 0991fba7024ab57634390813b0aa92d5e330345b
+    cd $SOURCES
+fi
+
+cd meta-genivi-demo/conf
+TEMPLATECONF=`pwd`rget 
+cd $SOURCES
+
+cd poky/
+. ./oe-init-build-env $SOURCES/$BUILD_FOLDER > /dev/null
+
+#Set up the bblayers and local conf
+if [ ! -f ".gdp" ]; then
+
+sed -i "/BBLAYERS ?=/a$SOURCES/meta-renesas \\\\" conf/bblayers.conf
+sed -i "/BBLAYERS ?=/a$SOURCES/meta-renesas/meta-rcar-gen2 \\\\" conf/bblayers.conf
+sed -i "/BBLAYERS ?=/a$SOURCES/meta-ivi/meta-ivi \\\\" conf/bblayers.conf
+sed -i "/BBLAYERS ?=/a$SOURCES/meta-qt5 \\\\" conf/bblayers.conf
+sed -i "/BBLAYERS ?=/a$SOURCES/meta-genivi-demo \\\\" conf/bblayers.conf
+sed -i "/BBLAYERS ?=/a$SOURCES/meta-openembedded/meta-oe \\\\" conf/bblayers.conf
+sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" -i conf/local.conf
+
+cat >> conf/local.conf <<EOF
+MACHINE_FEATURES_append = " sgx"
+LICENSE_FLAGS_WHITELIST = "commercial"
+MULTI_PROVIDER_WHITELIST += "virtual/libgl virtual/egl virtual/libgles1 virtual/libgles2"
+PREFERRED_PROVIDER_virtual/libgles1 = ""
+PREFERRED_PROVIDER_virtual/libgles2 = "gles-user-module"
+PREFERRED_PROVIDER_virtual/egl = "libegl"
+PREFERRED_PROVIDER_virtual/libgl = ""
+PREFERRED_PROVIDER_virtual/mesa = ""
+PREFERRED_PROVIDER_libgbm = "libgbm"
+PREFERRED_PROVIDER_libgbm-dev = "libgbm"
+VIRTUAL-RUNTIME_init_manager = "systemd"
+DISTRO_FEATURES_append = " systemd"
+
+BBMASK .= "|.*meta-renesas/common/recipes-multimedia/v4l2apps/"
+
+# Include static library in SDK
+SDKIMAGE_FEATURES_append = " staticdev-pkgs"
+EOF
+touch .gdp
+fi
+
+cat << EOF
+Welcome to the Genivi GPD build system
+
+The build environemnt has been configured for the $MACHINE target.
+If you are targeting a Renesas board, please follow the link below for instruction on how
+to obtain and install Renesas Graphics Drivers.
+
+http://wiki.projects.genivi.org/index.php/Hardware_Setup_and_Software_Installation/koelsch%26porter
+
+To start the build type:
+
+bitbake genivi-demo-platform
+EOF
+
