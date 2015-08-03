@@ -32,31 +32,6 @@ BUILD_FOLDER="gpd-build-$MACHINE"
 git submodule init
 git submodule update
 
-if [ ! -d "meta-ivi" ]; then
-    git clone git://git.yoctoproject.org/meta-ivi
-    cd meta-ivi
-    git checkout 0d780d0cfd38694ae5e6f0198adcb72684b01acc
-    cd $SOURCES
-fi
-if [ ! -d "poky" ]; then
-    git clone git://git.yoctoproject.org/poky
-    cd poky
-    git checkout b630f2f53645fa8f5890b4732f251c354ad525a7 
-    cd $SOURCES
-fi
-if [ ! -d "meta-qt5" ]; then
-        git clone https://github.com/meta-qt5/meta-qt5.git
-    cd meta-qt5
-    git checkout adeca0db212d61a933d7952ad44ea1064cfca747
-    cd $SOURCES
-fi
-if [ ! -d "meta-openembedded" ]; then
-    git clone git://git.openembedded.org/meta-openembedded 
-    cd meta-openembedded
-    git checkout 6413cdb66acf43059f94d0076ec9b8ad6a475b35
-    cd $SOURCES
-fi
-
 cd meta-genivi-demo/conf
 TEMPLATECONF=`pwd`rget 
 cd $SOURCES
