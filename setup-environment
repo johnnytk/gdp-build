@@ -21,7 +21,7 @@
 #
 SOURCES=`pwd`
 MACHINE=$1
-if [ -z "$BUILDROOT" ]; then
+if [ -z "$MACHINE" ]; then
     echo "Please select the development board you wish to target"
     echo "Currently supported boards are the Koelsh and the porter board"
     echo "Example: source ./setup-environment koelsh"
@@ -29,9 +29,9 @@ if [ -z "$BUILDROOT" ]; then
 fi
 BUILD_FOLDER="gpd-build-$MACHINE"
 
-if [ ! -d "meta-genivi-demo" ]; then
-    git clone git://git.projects.genivi.org/meta-genivi-demo.git
-fi
+git submodule init
+git submodule update
+
 if [ ! -d "meta-ivi" ]; then
     git clone git://git.yoctoproject.org/meta-ivi
     cd meta-ivi
@@ -54,12 +54,6 @@ if [ ! -d "meta-openembedded" ]; then
     git clone git://git.openembedded.org/meta-openembedded 
     cd meta-openembedded
     git checkout 6413cdb66acf43059f94d0076ec9b8ad6a475b35
-    cd $SOURCES
-fi
-if [ ! -d "meta-renesas" ]; then
-    git clone git://github.com/slawr/meta-renesas.git
-    cd meta-renesas
-    git checkout 0991fba7024ab57634390813b0aa92d5e330345b
     cd $SOURCES
 fi
 
