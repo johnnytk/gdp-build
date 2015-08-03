@@ -1,0 +1,3 @@
+[submodule "meta-genivi-demo"]
+	path = meta-genivi-demo
+	url = git@github.com:johnnytk/meta-genivi-demo.git
