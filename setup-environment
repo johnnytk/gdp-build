@@ -41,7 +41,6 @@ cd poky/
 
 #Set up the bblayers and local conf
 if [ ! -f ".gdp" ]; then
-echo "hej"
 cp $SOURCES/config/$MACHINE/* conf/
 touch .gdp
 fi
