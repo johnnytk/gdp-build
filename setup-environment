@@ -41,34 +41,8 @@ cd poky/
 
 #Set up the bblayers and local conf
 if [ ! -f ".gdp" ]; then
-
-sed -i "/BBLAYERS ?=/a$SOURCES/meta-renesas \\\\" conf/bblayers.conf
-sed -i "/BBLAYERS ?=/a$SOURCES/meta-renesas/meta-rcar-gen2 \\\\" conf/bblayers.conf
-sed -i "/BBLAYERS ?=/a$SOURCES/meta-ivi/meta-ivi \\\\" conf/bblayers.conf
-sed -i "/BBLAYERS ?=/a$SOURCES/meta-qt5 \\\\" conf/bblayers.conf
-sed -i "/BBLAYERS ?=/a$SOURCES/meta-genivi-demo \\\\" conf/bblayers.conf
-sed -i "/BBLAYERS ?=/a$SOURCES/meta-openembedded/meta-oe \\\\" conf/bblayers.conf
-sed -e "s,MACHINE ??=.*,MACHINE ??= '$MACHINE',g" -i conf/local.conf
-
-cat >> conf/local.conf <<EOF
-MACHINE_FEATURES_append = " sgx"
-LICENSE_FLAGS_WHITELIST = "commercial"
-MULTI_PROVIDER_WHITELIST += "virtual/libgl virtual/egl virtual/libgles1 virtual/libgles2"
-PREFERRED_PROVIDER_virtual/libgles1 = ""
-PREFERRED_PROVIDER_virtual/libgles2 = "gles-user-module"
-PREFERRED_PROVIDER_virtual/egl = "libegl"
-PREFERRED_PROVIDER_virtual/libgl = ""
-PREFERRED_PROVIDER_virtual/mesa = ""
-PREFERRED_PROVIDER_libgbm = "libgbm"
-PREFERRED_PROVIDER_libgbm-dev = "libgbm"
-VIRTUAL-RUNTIME_init_manager = "systemd"
-DISTRO_FEATURES_append = " systemd"
-
-BBMASK .= "|.*meta-renesas/common/recipes-multimedia/v4l2apps/"
-
-# Include static library in SDK
-SDKIMAGE_FEATURES_append = " staticdev-pkgs"
-EOF
+echo "hej"
+cp $SOURCES/config/$MACHINE/* conf/
 touch .gdp
 fi
 
