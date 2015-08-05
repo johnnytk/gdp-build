@@ -12,7 +12,7 @@
 	url = https://github.com/meta-qt5/meta-qt5.git
 [submodule "meta-ivi"]
 	path = meta-ivi
-	url = git://git.yoctoproject.org/meta-ivi
+	url = git@github.com:gunnarx/meta-ivi.git 
 [submodule "meta-openembedded"]
 	path = meta-openembedded
 	url = git://git.openembedded.org/meta-openembedded
