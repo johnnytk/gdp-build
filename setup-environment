@@ -21,7 +21,6 @@
 #
 SOURCES=`pwd`
 
-#Set up the bblayers and local conf
 if [ ! -f ".gdp" ]; then
     git submodule init
     git submodule update
