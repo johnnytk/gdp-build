@@ -20,37 +20,26 @@
 # Adapted for the Genivi Demo platform by Johnny Karlsson, Volvo Cars 2015
 #
 SOURCES=`pwd`
-MACHINE=$1
-if [ -z "$MACHINE" ]; then
-    echo "Please select the development board you wish to target"
-    echo "Currently supported boards are the Koelsh and the porter board"
-    echo "Example: source ./setup-environment koelsh"
-    return
-fi
-BUILD_FOLDER="gpd-build-$MACHINE"
 
-git submodule init
-git submodule update
+#Set up the bblayers and local conf
+if [ ! -f ".gdp" ]; then
+    git submodule init
+    git submodule update
+    touch .gdp
+fi
 
 cd meta-genivi-demo/conf
 TEMPLATECONF=`pwd`rget 
 cd $SOURCES
 
 cd poky/
-. ./oe-init-build-env $SOURCES/$BUILD_FOLDER > /dev/null
-
-#Set up the bblayers and local conf
-if [ ! -f ".gdp" ]; then
-cp $SOURCES/config/$MACHINE/* conf/
-touch .gdp
-fi
+. ./oe-init-build-env $SOURCES/build > /dev/null
 
 cat << EOF
-Welcome to the Genivi GPD build system
+Welcome to the Genivi GDP build system
 
-The build environemnt has been configured for the $MACHINE target.
-If you are targeting a Renesas board, please follow the link below for instruction on how
-to obtain and install Renesas Graphics Drivers.
+The build environment has been configured for the koelsh target.
+Please follow the link below for instruction on how to obtain and install Renesas Graphics Drivers.
 
 http://wiki.projects.genivi.org/index.php/Hardware_Setup_and_Software_Installation/koelsch%26porter
 

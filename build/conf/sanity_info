@@ -1,0 +1,3 @@
+SANITY_VERSION 1
+TMPDIR /home/johnnykar/projects/new/gdp-build/build/tmp
+SSTATE_DIR /home/johnnykar/projects/new/gdp-build/build/sstate-cache
