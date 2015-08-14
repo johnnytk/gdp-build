@@ -37,10 +37,7 @@ cd poky/
 cat << EOF
 Welcome to the Genivi GDP build system
 
-The build environment has been configured for the koelsh target.
-Please follow the link below for instruction on how to obtain and install Renesas Graphics Drivers.
-
-http://wiki.projects.genivi.org/index.php/Hardware_Setup_and_Software_Installation/koelsch%26porter
+The build environment has been configured for the raspberry-pi target.
 
 To start the build type:
 
